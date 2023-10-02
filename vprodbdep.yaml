@@ -4,42 +4,42 @@ metadata:
   name: vprodb
   labels:       
     app: vprodb      # This label is for the service definition file.
-  spec:               # Create a service of type Cluster IP where the database service
-    selector:         # will route the request to any pod that has this label.
-      matchLabels:
-        app: vprodb   # Deployment Definition File.
-    replicas: 1
-    template:
-      metadata:
-        labels:
-          app: vprodb # Pod will have this label
-      spec:
-        containers:
-          - name: vprodb  # Main container for this pod
-            image: vprofile/vprofiledb:V1
-            volumeMounts:      # Map the volume to the pod when container vprodb starts
-              - mountPath: /var/lib/mysql
-                name: vpro-db-data
-            ports:
-              - name: vprodb-port
-                containerPort: 3306
-            env:    # Environment variable to read MySQL DB password used in database container vprodb
-              - name: MYSQL_ROOT_PASSWORD
-                valueFrom:        
-                  secretKeyRef:
-                    name: app-secret  # From app-secret.yaml
-                    key: db-pass      # db-pass assigned to MYSQL_ROOT_PASSWORD as value
-        nodeSelector:
-          zone: us-east-1a            # Volume and db pod running in the same zone (us-east-1a)
-        volumes:
-          - name: vpro-db-data        # Create this volume and mounted above to /var/lib/mysql
-            awsElasticBlockStore:
-              volumeID: vol-01e36a58c9c6140cd   # Id from aws ec2 create-volume command
-              fsType: ext4                      # Need to tag the volume that we want to attach. Need to give the EBS Volume.
-        initContainers:       # Run before vprodb (main) to delete /var/lib/mysql/lost+found folder from other containers that ran on pod
-          - name: busybox     # After the rm command is removed, this container will end and container vprodb will start
-            image: busybox:latest
-            arg: ["rm","-rf","/var/lib/mysql/lost+found"]
-            volumeMounts:     # Mount directory /var/lib/mysql to container 
-              - name: vpro-db-data
-                mountPath: /var/lib/mysql  
+spec:               # Create a service of type Cluster IP where the database service
+  selector:         # will route the request to any pod that has this label.
+    matchLabels:
+      app: vprodb   # Deployment Definition File.
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: vprodb # Pod will have this label
+    spec:
+      containers:
+        - name: vprodb  # Main container for this pod
+          image: vprofile/vprofiledb:V1
+          volumeMounts:      # Map the volume to the pod when container vprodb starts
+            - mountPath: /var/lib/mysql
+              name: vpro-db-data
+          ports:
+            - name: vprodb-port
+              containerPort: 3306
+          env:    # Environment variable to read MySQL DB password used in database container vprodb
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:        
+                secretKeyRef:
+                  name: app-secret  # From app-secret.yaml
+                  key: db-pass      # db-pass assigned to MYSQL_ROOT_PASSWORD as value
+      nodeSelector:
+        zone: us-east-1a            # Volume and db pod running in the same zone (us-east-1a)
+      volumes:
+        - name: vpro-db-data        # Create this volume and mounted above to /var/lib/mysql
+          awsElasticBlockStore:
+            volumeID: vol-01e36a58c9c6140cd   # Id from aws ec2 create-volume command
+            fsType: ext4                      # Need to tag the volume that we want to attach. Need to give the EBS Volume.
+      initContainers:       # Run before vprodb (main) to delete /var/lib/mysql/lost+found folder from other containers that ran on pod
+        - name: busybox     # After the rm command is removed, this container will end and container vprodb will start
+          image: busybox:latest
+          args: ["rm","-rf","/var/lib/mysql/lost+found"]
+          volumeMounts:     # Mount directory /var/lib/mysql to container 
+            - name: vpro-db-data
+              mountPath: /var/lib/mysql  
