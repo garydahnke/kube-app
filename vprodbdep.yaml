@@ -27,9 +27,9 @@ spec:               # Create a service of type Cluster IP where the database ser
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:        
                 secretKeyRef:
-                  name: app-secret  # From app-secret.yaml
-                  key: db-pass      # db-pass assigned to MYSQL_ROOT_PASSWORD as value
-      nodeSelector:
+                  name: app-secret  # Retrieve db-pass and value from app-secret.yaml
+                  key: db-pass      # db-pass value from app-secret.yaml assigned to MYSQL_ROOT_PASSWORD 
+      nodeSelector:                 
         zone: us-east-1a            # Volume and db pod running in the same zone (us-east-1a)
       volumes:
         - name: vpro-db-data        # Create this volume and mounted above to /var/lib/mysql

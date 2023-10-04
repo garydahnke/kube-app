@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vproapp
+  labels:
+    app: vproapp
+spec:
+  replacas: 1
+  selector:
+    matchLabels:
+      app: vproapp
+  template:
+    metadata:
+      labels:
+        app: vproapp    # Label of pod
+    spec:  
+      containers: 
+        - name: vproapp # Multiple containers will run on this container
+          image: vprofile/vprofileapp:V1
+          ports:
+            - name: vproapp-port
+              containerPort: 8080
+      initContainers:     # Create init-mydb container and then create the vproapp container.
+        - name: init-mydb   
+          image: busybox  # Image that will run a command.
+          # Loop until the vprodb container is available; then create vproapp container (above)
+          command: ['sh','-c','until nslookup vprodb; do echo waiting for mydb; sleep 2; done;']
+        - name: init-memcache
+          image: busybox  # Image that will run a command.
+          # Loop until the vprocache container is available; then create vproapp container (above)
+          command: ['sh','-c','until nslookup vprocache; do echo waiting for mydb; sleep 2; done;']
+
+

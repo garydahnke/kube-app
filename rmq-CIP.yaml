@@ -1,0 +1,12 @@
+apiVersion: v1  # Service definition file for rmq-dep.yaml (Deployment file)
+kind: Service   # Service definition file will be based on application.properties file
+metadata:
+  name: vpromq01
+spec:
+  ports:                          # Need port name in rmq-dep.yaml ports: - name: vpromc-port
+    - port: 15672                 # Listen for requests on port 15672
+      targetPort: vpromq01-port   # rmq-dep.yaml ports: - name: vpromq01-port containerPort: 15672 
+      protocol: TCP
+  selector:                       # Forward the request to ClusterIP
+    app: vpromq01
+  type: ClusterIP

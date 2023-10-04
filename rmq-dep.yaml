@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vpromq01
+  labels:
+    app: vpromq01
+spec:
+  selector:
+    matchLabels:
+      app: vpromq01
+  replicas: 1
+  template:
+    metadata:                   # Pod information
+      labels:
+        app: vpromq01           # Pod label 
+    spec:
+      containers:
+        - name: vpromq01
+          image: rabbitmq       # Docker image from Docker Hub
+          ports:
+            - name: vpromq01-port
+              containerPort: 15672
+          env:
+            - name: RABBITMQ_DEFAULT_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: app-secret    # Retrieve rmq-pass and value from app-secret.yaml
+                  key: rmq-pass       # rmq-pass value from app-secret.yaml assigned to RABBITMQ_DEFAULT_PASS
+            - name: RABBITMQ_DEFAULT_USER
+              value: guest            # Assign 'guest' to RABBITMQ_DEFAULT_USER
+
