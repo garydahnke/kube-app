@@ -6,6 +6,7 @@ spec:
   ports:
     - port: 80
       targetPort: vproapp-port
+      protocol: TCP
   selector:
     app: vproapp
   type: LoadBalancer  # Launch an Elastic Load Balancer
