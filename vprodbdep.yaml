@@ -16,7 +16,7 @@ spec:               # Create a service of type Cluster IP where the database ser
     spec:
       containers:
         - name: vprodb  # Main container for this pod
-          image: vprofile/vprofiledb:V1
+          image: garydahnke/vprofiledb
           args:
             - "--ignore-db-dir=lost+found"
           volumeMounts:      # Map the volume to the pod when container vprodb starts
