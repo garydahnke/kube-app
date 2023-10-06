@@ -17,6 +17,8 @@ spec:               # Create a service of type Cluster IP where the database ser
       containers:
         - name: vprodb  # Main container for this pod
           image: vprofile/vprofiledb:V1
+          args:
+            - "--ignore-db-dir=lost+found"
           volumeMounts:      # Map the volume to the pod when container vprodb starts
             - mountPath: /var/lib/mysql
               name: vpro-db-data
@@ -36,10 +38,10 @@ spec:               # Create a service of type Cluster IP where the database ser
           awsElasticBlockStore:
             volumeID: vol-01e36a58c9c6140cd   # Id from aws ec2 create-volume command
             fsType: ext4                      # Need to tag the volume that we want to attach. Need to give the EBS Volume.
-      initContainers:       # Run before vprodb (main) to delete /var/lib/mysql/lost+found folder from other containers that ran on pod
-        - name: busybox     # After the rm command is removed, this container will end and container vprodb will start
-          image: busybox:latest
-          args: ["rm","-rf","/var/lib/mysql/lost+found"]
-          volumeMounts:     # Mount directory /var/lib/mysql to container 
-            - name: vpro-db-data
-              mountPath: /var/lib/mysql  
+      # initContainers:       # Run before vprodb (main) to delete /var/lib/mysql/lost+found folder from other containers that ran on pod
+      #   - name: busybox     # After the rm command is removed, this container will end and container vprodb will start
+      #     image: busybox:latest
+      #     args: ["rm","-rf","/var/lib/mysql/lost+found"]
+      #     volumeMounts:     # Mount directory /var/lib/mysql to container 
+      #       - name: vpro-db-data
+      #         mountPath: /var/lib/mysql  
