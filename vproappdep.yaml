@@ -28,7 +28,5 @@ spec:
         - name: init-memcache
           image: busybox  # Image that will run a command.
           # Loop until the vprocache container is available; then create vproapp container (above)
-          # command: ['sh','-c','until nslookup vprocache; do echo waiting for mydb; sleep 2; done;']
-          command: ['sh','-c','until nslookup vpromc; do echo waiting for mydb; done;']
-
+          command: ['sh','-c','until nslookup vprocache; do echo waiting for mydb; sleep 2; done;']          
 
