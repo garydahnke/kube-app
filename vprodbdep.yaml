@@ -31,8 +31,9 @@ spec:               # Create a service of type Cluster IP where the database ser
                 secretKeyRef:
                   name: app-secret  # Retrieve db-pass and value from app-secret.yaml
                   key: db-pass      # db-pass value from app-secret.yaml assigned to MYSQL_ROOT_PASSWORD 
-      nodeSelector:                 
-        zone: us-east-1a            # Volume and db pod running in the same zone (us-east-1a)
+      nodeSelector:    
+        topology.kubernetes.io/zone: us-east-1a          
+        # zone: us-east-1a            # Volume and db pod running in the same zone (us-east-1a)
       volumes:
         - name: vpro-db-data        # Create this volume and mounted above to /var/lib/mysql
           awsElasticBlockStore:
