@@ -14,6 +14,7 @@ spec:               # Create a service of type Cluster IP where the database ser
       labels:
         app: vprodb # Pod will have this label
     spec:
+      terminationGracePeriodSeconds: 0
       containers:
         - name: vprodb  # Main container for this pod
           image: vprofile/vprofiledb:V1
