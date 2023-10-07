@@ -41,7 +41,7 @@ spec:               # Create a service of type Cluster IP where the database ser
       initContainers:       # Run before vprodb (main) to delete /var/lib/mysql/lost+found folder from other containers that ran on pod
         - name: busybox     # After the rm command is removed, this container will end and container vprodb will start
           image: busybox:latest
-          args: ["rm","-rf","/var/lib/mysql/lost+found"]
+          command: ["rm","-rf","/var/lib/mysql/lost+found"]
           volumeMounts:     # Mount directory /var/lib/mysql to container 
             - name: vpro-db-data
               mountPath: /var/lib/mysql  
